@@ -41,6 +41,8 @@ namespace FixMate
 
             builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
+            builder.Services.AddScoped<DbService>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

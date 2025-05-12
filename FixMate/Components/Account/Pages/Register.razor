@@ -15,6 +15,8 @@
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
 
+@inject DbService DbService
+
 <PageTitle>Register</PageTitle>
 
 <h1>Register</h1>
@@ -79,6 +81,12 @@
             identityErrors = result.Errors;
             return;
         }
+
+        await DbService.AddSubscriptionAsync(new Data.Models.UserSubscription
+            {
+                UserId = user.Id,
+                SubscriptionId = 0,
+            });
 
         Logger.LogInformation("User created a new account with password.");
 
