@@ -1,5 +1,10 @@
 ﻿@page "/tutorials"
 @rendermode InteractiveServer
+@using FixMate.Data
+@using FixMate.Data.Models
+
+@inject DbService DbService
+@inject NavigationManager NavigationManager
 
 <PageTitle>Tutorials</PageTitle>
 
@@ -12,11 +17,11 @@
         {
             <div class="col-md-4 mb-4">
                 <div class="card h-100">
-                    <img src="@t.ImageUrl" class="card-img-top" alt="@t.Title placeholder image">
+                    <img src="@t.PreviewImageUrl" class="card-img-top" alt="@t.Title placeholder image">
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">@t.Title</h5>
                         <p class="card-text">@t.Description</p>
-                        <NavLink class="btn btn-primary mt-auto" href="@t.Link">View Tutorial</NavLink>
+                        <button class="btn btn-primary mt-auto" @onclick="@(() => GoToTutorialDetails(t.Id))">View Tutorial</button>
                     </div>
                 </div>
             </div>
@@ -25,43 +30,15 @@
 </section>
 
 @code {
-    private class Tutorial
+    private List<Tutorial> generalTutorials = new();
+
+    protected override async Task OnInitializedAsync()
     {
-        public string Title { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-        public string ImageUrl { get; set; } = string.Empty;
-        public string Link { get; set; } = string.Empty;
+        generalTutorials = DbService.GetAllTutorials();
     }
 
-    private List<Tutorial> generalTutorials = new()
+    private void GoToTutorialDetails(string tutorialId)
     {
-        new Tutorial
-        {
-            Title = "Oil Change Basics",
-            Description = "Step-by-step guide to changing your engine oil safely.",
-            ImageUrl = "images/placeholder-oil.jpg",
-            Link = "tutorials/oil-change"
-        },
-        new Tutorial
-        {
-            Title = "Brake Pad Replacement",
-            Description = "Learn how to replace worn brake pads in minutes.",
-            ImageUrl = "images/placeholder-brakes.jpg",
-            Link = "tutorials/brake-pad-replacement"
-        },
-        new Tutorial
-        {
-            Title = "Battery Jumpstart",
-            Description = "Quick method to jumpstart a dead car battery.",
-            ImageUrl = "images/placeholder-battery.jpg",
-            Link = "tutorials/jumpstart-battery"
-        },
-        new Tutorial
-        {
-            Title = "Windscreen Wiper Replacement",
-            Description = "Learn how to replace windscreen wipers.",
-            ImageUrl = "images/placeholder-wipers.jpg",
-            Link = "tutorials/replace-wipers"
-        }
-    };
+        NavigationManager.NavigateTo($"/tutorials/{tutorialId}");
+    }
 }

@@ -1,0 +1,32 @@
+﻿@page "/tutorials/{TutorialId}"
+@rendermode InteractiveServer
+@using FixMate.Data
+@using FixMate.Data.Models
+    
+@inject DbService DbService
+
+<h3>TutorialDetails</h3>
+
+@if (tutorial is null)
+{
+    <p><em>Tutorial not found.</em></p>
+}
+else
+{
+    <h2>@tutorial.Title</h2>
+    <p>@tutorial.Description</p>
+}
+
+
+@code {
+    [Parameter]
+    public required string TutorialId { get; set; }
+
+    private Tutorial? tutorial;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var generalTutorials = DbService.GetAllTutorials();
+        tutorial = generalTutorials.FirstOrDefault(t => t.Id.ToString() == TutorialId);
+    }
+}
